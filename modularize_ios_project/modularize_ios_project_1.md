@@ -1,4 +1,4 @@
-# Tools to Modularize iOS Project (1)
+# `Target`: Tools to Modularize iOS Project (1)
 
 ## Build module using `Target`
 
@@ -6,39 +6,60 @@
 
 Therefore, to modularize our project, we could ship different modules via `Targets` and let `Main Target` depend on those targets to build up the whole project.
 
+## Setup the environment
+The following setup happens in a `workspace` built by CocoaPods, however, it really doesn't matter. You can still build your own target in a `project` following the same procedure.  
 
 1.	Tap `+` button  in `Targets`
-![1.tiff](./Assets/1.tiff)
 
-	0.	Choose `Cocoa Touch Framework` in the poped window.
+	![1.tiff](./Assets/1.jpg)
 
+2. Choose `Cocoa Touch Framework` in the poped window.
 
-	0.	Make sure `Project` and `Embed in Application` is correctly configured.
+	![1.tiff](./Assets/2.jpg)
 
-	0.	You could see that a new folder is created and a new target is added in the `TARGETS` section.
+3. Make sure `Project` and `Embed in Application` both targeted at your main Target.
 
-	0.	In your main target, check the `Target Dependencies` is set up correctly. If you created multiple targets and wanted to manage dependencies among them, this will be the right place for you.
+	![1.tiff](./Assets/3.jpg)
 
-	0.	Now you start writing code inside this target. For example, you created a class named `TMADirDemoViewController` and some private helper classes named `TMALittleSecret` and `TMAReallySecret`.
+4. You could see that a new folder is created and a new target is added in the `TARGETS` section.
 
-And you only want `TMADirDemoViewController` to be exposed to the clients (public). Here is what you should do:
-	⁃	Move `TMADirViewController.h` to `Public Headers` in `Build Phases`
-	⁃	Import `TMADirViewController.h` in header `TMADirTarget.h`
+	![1.tiff](./Assets/4.jpg)
 
+5. In your main target, check if the `Target Dependencies` is set up correctly. If you created multiple targets and wanted to manage dependencies among them, this will be the right place for you.
 
-You might notice that actually we could choose three levels of headers, `Public`,  `Private` and `Project`.
-	⁃	`Public` means that these interfaces are exposed for clients to use and will not change frequently
-	⁃	`Private` still means that these interfaces are exposed, however, they are either under development that will be changed frequently, or they are not supposed to used by clients at all (That’s why it’s called private).
-	⁃	`Project` means they will not be exposed. These interfaces could only be used inside this library(target).
+	![1.tiff](./Assets/5.jpg)
 
-7.  How client uses this?
-Import this library as you did for other libraries
+6. Now you can start writing code inside this target. For example, you created a class named `TMADirDemoViewController` and some private helper classes named `TMALittleSecret` and `TMAReallySecret`.
+
+	![1.tiff](./Assets/6.jpg)
+
+7. In the meantime, you want only `TMADirDemoViewController` to be exposed to the clients (public). Here are what you should do:
+    - Move `TMADirViewController.h` to `Public Headers` in `Build Phases`
+    - Import `TMADirViewController.h` in header `TMADirTarget.h`
+
+    ![1.tiff](./Assets/7.jpg)
+    ![1.tiff](./Assets/8.jpg)
+
+    You might have noticed that we could choose three levels of headers, `Public`,  `Private` and `Project`. And yes, they could control what will be exposed outside the library. (Remember what we build is a Cocoa Touch Library, right?)
+
+    - `Public` means that these interfaces are **exposed** for clients to use and will not change frequently.
+    - `Private` **still means these interfaces are exposed**, however, it means for clients to JUST see them rather than use them because these interfaces might be under development that will be changed frequently or other whatever reasons.
+    - `Project` means they will **not be exposed**. These interfaces could only be used inside this library(target).
+
+## How do client uses this?
+Import this module the same as you did for other libraries
 ```objc
 #import <TMADirTarget/TMADirTarget.h>
 ```
+![1.tiff](./Assets/9.jpg)
 
+## How to compile and test it separately?
+For compile, just change the `Scheme` and then compile.  
+For test, however, you will need another target to test this target. But an easier way is that you could select `Unit Test` when you created the target.
 
-	0.	How to compile and test it separately? For compile, just change the `Scheme` and then compile. For test, however, you will need another target to test this target. But an easier way is that you could select `Unit Test` when you created the target.
+![1.tiff](./Assets/10.jpg)
 
+## Working with CocoaPods
+If you want this new target to use some Cocoapods libraries, you can just set it in the `Podfile`.
 
-	0.	If you want this new target to use some Cocoapods libraries, you can set it in the `Podfile`.
+![1.tiff](./Assets/11.jpg)
