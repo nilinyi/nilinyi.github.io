@@ -1,4 +1,18 @@
-# Understand Cocoapods (1)
+<!-- ---
+    author: Linyi Ni
+    comments: true
+    date: 2017-12-25 10:12:26+00:00
+    layout: post
+    title: Understand CocoaPods
+    categories:
+    - Work
+    - iOS
+    tags:
+    - iOS
+    - CocoaPods
+---
+
+# Understand Cocoapods
 
 When project becomes bigger, it’s inevitable for the team to build different modules so that code could be reused and engineers could work concurrently on different modules. In iOS particularly, we use static library, or framework(Cocoa Touch Library) to aggregate codes into a module. However, integration is always a headache. CocoaPods is born to fix this problem. This article is talking about what is CocoaPods, why we should use CocoaPods and how to create CocoaPods.
 
@@ -40,14 +54,17 @@ For users, just specify what Pod(library) you want to use in `Podfile`. Forget a
 For library developers, `podspec` is the only place you will need to manage. I will cover this in the next article.
 
 ### How CocoaPods works?
+Todo
 
 ##### How to manage dependency?
 It uses `Xcode Workspace` where `Pods.xcodeproj` is a subproject which includes all the libraries that each of them wrapped in a single `Target` and all the dependency settings leveraged by `Target`. (Thanks to Xcode, it's really easy to set dependency for each targets.) At the same time, in your project, `libPod.a` will be set as the linked static library, which is generated from `Pods.xcodeproj`. Therefore, every time you compile your code, it's also guaranteed that the compile is in the right order---`Pods.xcodeproj` will first get compiled based on the dependency order it sets inside and a static library `libPod.a` will be generated afterwards to participate your project's compile.
 
 ##### What if dependency conflict happens?
+Todo
 
 ##### Where do these Pods(libraries) get fetched?
+Todo
 
 
 
-[standard archive header]: http://www.manpagez.com/man/5/ranlib/
+[standard archive header]: http://www.manpagez.com/man/5/ranlib/ -->
