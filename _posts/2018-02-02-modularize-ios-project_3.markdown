@@ -1,9 +1,9 @@
 ---
     author: Linyi Ni
     comments: true
-    date: 2018-02-02 17:42:32+00:00
+    date: 2018-02-06 17:42:32+00:00
     layout: post
-    title: "Tools to Modularize iOS Project (2): Multi-projects"
+    title: "Tools to Modularize iOS Project (3): Multi-projects"
     categories:
     - Work
     - iOS

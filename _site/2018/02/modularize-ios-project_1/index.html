@@ -132,18 +132,18 @@
   </header>
 
   <section class="post">
-    <h2 id="build-module-via-target">Build module via <code class="highlighter-rouge">Target</code></h2>
+    <h2 id="build-module-via-target">Build module via Target</h2>
 
-<p><code class="highlighter-rouge">Targets</code> are usually used for different distributions of the same project. For example, if you want to ship an iPad version, using <code class="highlighter-rouge">Target</code> could help you a lot. You might also see the <code class="highlighter-rouge">Test Target</code> in your project if you do Unit Test or UI Test. Anyway, in my perspective, <code class="highlighter-rouge">Targets</code> are the different managers of all the shared source code in that they determine which files to compile, how to compile and what thing to ship out, etc.</p>
+<p>You might have known that <code class="highlighter-rouge">Targets</code> are usually used for different distributions of the same project. One example is that using <code class="highlighter-rouge">Target</code> to ship an iPad version out of your iOS project. Another example is the <code class="highlighter-rouge">Test Target</code> in your project if you perform Unit Test or UI Test. In short, <code class="highlighter-rouge">Targets</code> are the different managers of all the shared source code in that they determine which files to compile, how to compile and what things to ship out, etc.</p>
 
-<p>Therefore, one way to modularize our project is that, we could ship different modules via <code class="highlighter-rouge">Targets</code> and let <code class="highlighter-rouge">Main Target</code> depend on those targets to build up the whole project.</p>
+<p>Therefore, one way to modularize an iOS project is to ship different modules via <code class="highlighter-rouge">Targets</code> and let <code class="highlighter-rouge">Main Target</code> depend on these targets to build the whole project. Technically, we are just using Target to build <strong>framework</strong> that could be used as individual <strong>module</strong>.</p>
 
 <h2 id="setup-the-environment">Setup the environment</h2>
-<p>The following setup happens in a <code class="highlighter-rouge">workspace</code> built by CocoaPods, however, it really doesn’t matter. You can still build your own target in a <code class="highlighter-rouge">project</code> following the same procedure.</p>
+<p>The following setup is under a <code class="highlighter-rouge">workspace</code> built by CocoaPods, however, it really doesn’t matter whether you are in a CocoaPods environment or not. You can still follow the same procedure because all of the steps are under the <code class="highlighter-rouge">Main Project/Target</code>.</p>
 
 <ol>
   <li>
-    <p>Tap <code class="highlighter-rouge">+</code> button  in <code class="highlighter-rouge">Targets</code></p>
+    <p>Tap <code class="highlighter-rouge">+</code> button  in <code class="highlighter-rouge">TARGETS</code> section.</p>
 
     <p><img src="/assets/modularize-ios-project/1.jpg" alt="1.tiff" /></p>
   </li>
@@ -153,7 +153,7 @@
     <p><img src="/assets/modularize-ios-project/2.jpg" alt="1.tiff" /></p>
   </li>
   <li>
-    <p>Make sure <code class="highlighter-rouge">Project</code> and <code class="highlighter-rouge">Embed in Application</code> both targeted at your main Target.</p>
+    <p>Make sure <code class="highlighter-rouge">Project</code> and <code class="highlighter-rouge">Embed in Application</code> both target at your <code class="highlighter-rouge">Main Project/Target</code>.</p>
 
     <p><img src="/assets/modularize-ios-project/3.jpg" alt="1.tiff" /></p>
   </li>
@@ -163,17 +163,17 @@
     <p><img src="/assets/modularize-ios-project/4.jpg" alt="1.tiff" /></p>
   </li>
   <li>
-    <p>In your main target, check if the <code class="highlighter-rouge">Target Dependencies</code> is set up correctly. If you created multiple targets and wanted to manage dependencies among them, here will be the right place for you.</p>
+    <p>In your <code class="highlighter-rouge">Main Project/Target</code>, check if the <code class="highlighter-rouge">Target Dependencies</code> is set up correctly. If you created multiple targets and wanted to manage dependencies among them, here will be the right place for you. The <code class="highlighter-rouge">Target Dependencies</code> means that the targets listed here, a.k.a. child targets, will get compiled first until the parent target get compiled.</p>
 
     <p><img src="/assets/modularize-ios-project/5.jpg" alt="1.tiff" /></p>
   </li>
   <li>
-    <p>Now you can start writing code inside this target. For example, I created a class named <code class="highlighter-rouge">TMADirDemoViewController</code> and some private helper classes named <code class="highlighter-rouge">TMALittleSecret</code> and <code class="highlighter-rouge">TMAReallySecret</code>.</p>
+    <p>Now you can start writing code inside this target. For example, I created a class named <code class="highlighter-rouge">TMADirDemoViewController</code> and some private helper classes named <code class="highlighter-rouge">TMALittleSecret</code> and <code class="highlighter-rouge">TMAReallySecret</code>. (These are very very bad name, though. Don’t use them in your project.)</p>
 
     <p><img src="/assets/modularize-ios-project/6.jpg" alt="1.tiff" /></p>
   </li>
   <li>
-    <p>In the meantime, you only want <code class="highlighter-rouge">TMADirDemoViewController</code> to be exposed to the clients (public). Here are what you should do:</p>
+    <p>If you want <code class="highlighter-rouge">TMADirDemoViewController</code> in this target to be exposed to the outside, here are what you should do:</p>
     <ul>
       <li>Move <code class="highlighter-rouge">TMADirViewController.h</code> to <code class="highlighter-rouge">Public Headers</code> in <code class="highlighter-rouge">Build Phases</code></li>
       <li>Import <code class="highlighter-rouge">TMADirViewController.h</code> in header <code class="highlighter-rouge">TMADirTarget.h</code></li>
@@ -182,26 +182,26 @@
     <p><img src="/assets/modularize-ios-project/7.jpg" alt="1.tiff" />
  <img src="/assets/modularize-ios-project/8.jpg" alt="1.tiff" /></p>
 
-    <p>You might have noticed that we could choose three levels of headers, <code class="highlighter-rouge">Public</code>,  <code class="highlighter-rouge">Private</code> and <code class="highlighter-rouge">Project</code>. And yes, they could control what will be exposed outside the library. (Remember what we build is a Cocoa Touch Library, right?)</p>
+    <p>You might have noticed that we could choose three levels of headers, <code class="highlighter-rouge">Public</code>,  <code class="highlighter-rouge">Private</code> and <code class="highlighter-rouge">Project</code>. In fact, they could control what classes will be exposed outside the target.</p>
 
     <ul>
-      <li><code class="highlighter-rouge">Public</code> means that these interfaces are <strong>exposed</strong> for clients to use and will not change frequently</li>
-      <li><code class="highlighter-rouge">Private</code> <strong>still means these interfaces are exposed</strong>, however, it means for clients to JUST see them rather than use them because these interfaces might be under development that will be changed frequently or other whatever reasons</li>
-      <li><code class="highlighter-rouge">Project</code> means they will <strong>not be exposed</strong>. These interfaces could only be used inside this library(target).</li>
+      <li><code class="highlighter-rouge">Public</code> means that these interfaces are <strong>exposed</strong> for clients to use and will not be changed frequently.</li>
+      <li><code class="highlighter-rouge">Private</code> <strong>still means these interfaces are exposed</strong>, however, it means for clients to JUST see them rather than use them because these interfaces might be under development that will be changed frequently or for some other whatever reasons.</li>
+      <li><code class="highlighter-rouge">Project</code> means they will <strong>not be exposed</strong>. These interfaces could only be used inside this target.</li>
     </ul>
   </li>
 </ol>
 
 <h2 id="how-to-use-this-module-in-other-modules">How to use this module in other modules?</h2>
-<p>Import this module the same as you did for other libraries</p>
+<p>Looks familiar, right?</p>
 <div class="language-objc highlighter-rouge"><pre class="highlight"><code><span class="cp">#import &lt;TMADirTarget/TMADirTarget.h&gt;
 </span></code></pre>
 </div>
 <p><img src="/assets/modularize-ios-project/9.jpg" alt="1.tiff" /></p>
 
 <h2 id="how-to-compile-and-test-it-separately">How to compile and test it separately?</h2>
-<p>For compile, just change the <code class="highlighter-rouge">Scheme</code> and then compile.<br />
-For test, however, you will need another target to test this target. But an easier way is that you could select <code class="highlighter-rouge">Unit Test</code> when you created the target.</p>
+<p>For compile, just change the <code class="highlighter-rouge">Scheme</code> and then compile. Most of the time, you don’t need to do that because when you compile <code class="highlighter-rouge">Main Project/Target</code>, all its depending targets will be compiled before it does.<br />
+For test, however, you will need another target to test this target. Just the way that you test your <code class="highlighter-rouge">Main Project/Target</code>. But an easier way is that you could select <code class="highlighter-rouge">Unit Test</code> when you created the target.</p>
 
 <p><img src="/assets/modularize-ios-project/10.jpg" alt="1.tiff" /></p>
 
@@ -218,9 +218,9 @@ For test, however, you will need another target to test this target. But an easi
    
    <div class="read-more-item">
        <span class="read-more-item-dim">最近的文章</span>
-       <h2 class="post-list__post-title post-title"><a href="/2018/02/modularize-ios-project_2/" title="link to Tools to Modularize iOS Project (2): Multi-projects">Tools to Modularize iOS Project (2): Multi-projects</a></h2>
-       <p class="excerpt">Build module via Multi-projectsThe last article was talking about how to use Target to build modules. However, if you have multiple teams contributing to different businesses/features, using Target to build module might not be suitable. The reason...&hellip;</p>
-       <div class="post-list__meta"><time datetime="2018-02-02 17:42:32 +0000" class="post-list__meta--date date">2018-02-02</time> &#8226; <span class="post-list__meta--tags tags">iOS Architecture</span><a class="btn-border-small" href=/2018/02/modularize-ios-project_2/>继续阅读</a></div>
+       <h2 class="post-list__post-title post-title"><a href="/2018/02/modularize-ios-project_3/" title="link to Tools to Modularize iOS Project (3): Multi-projects">Tools to Modularize iOS Project (3): Multi-projects</a></h2>
+       <p class="excerpt">Build module via Multi-projectsThe last article was talking about how to use Target to build modules. However, if you have multiple teams contributing to different apps/businesses/features, using Target to build module might not be suitable. The r...&hellip;</p>
+       <div class="post-list__meta"><time datetime="2018-02-06 17:42:32 +0000" class="post-list__meta--date date">2018-02-06</time> &#8226; <span class="post-list__meta--tags tags">iOS Architecture</span><a class="btn-border-small" href=/2018/02/modularize-ios-project_3/>继续阅读</a></div>
    </div>
    
    
